@@ -4,9 +4,9 @@ import { Icon as SiteIcon, title as siteTitle } from '@/config/site';
 
 export default function HeroAuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen container w-full lg:max-w-none md:grid lg:grid-cols-2 lg:px-0">
+    <div className="min-h-screen container w-full lg:max-w-none grid lg:grid-cols-2 lg:px-0">
       {/* Hero */}
-      <div className="hidden lg:flex flex-col justify-between p-10 bg-zinc-900 text-white dark:border-r">
+      <div className="hidden lg:flex flex-col justify-between p-10 bg-primary text-primary-foreground dark:border-r">
         <div className="flex gap-2 items-center text-lg font-medium">
           <SiteIcon size={22} />
           {siteTitle}
@@ -20,7 +20,7 @@ export default function HeroAuthLayout({ children }: { children: ReactNode }) {
         </blockquote>
       </div>
 
-      <div className="relative flex items-center justify-center py-8">{children}</div>
+      <div className="relative flex flex-col items-center justify-center py-8">{children}</div>
     </div>
   );
 }

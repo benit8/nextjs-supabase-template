@@ -12,13 +12,13 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   if (error || !data.user) return redirect(unauthenticatedUrl);
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+    <div className="grid min-h-screen w-full grid-cols-[1fr] md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <SideBar />
 
-      <div className="flex flex-col">
+      <div className="grid grid-rows-[3.5rem_1fr] max-h-screen">
         <Header />
 
-        <main className="flex flex-col flex-1 gap-4 lg:gap-6 p-4 lg:p-6">{children}</main>
+        <main className="gap-4 lg:gap-6 p-4 overflow-scroll">{children}</main>
       </div>
     </div>
   );

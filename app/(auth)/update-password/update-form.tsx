@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef } from 'react';
 import { useFormState } from 'react-dom';
 import { useForm } from 'react-hook-form';
@@ -15,6 +16,7 @@ import { update } from './actions';
 
 const updateFormSchema = z
   .object({
+    /// FIXME: localized error messages
     password: z.string().trim().min(6),
     passwordConfirm: z.string().trim().min(6),
   })
@@ -24,6 +26,8 @@ const updateFormSchema = z
   });
 
 export function UpdateForm() {
+  const t = useTranslations();
+
   const [state, formAction] = useFormState(update, { message: '' });
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -35,26 +39,21 @@ export function UpdateForm() {
 
   useEffect(() => {
     if (state.message !== '') {
-      if (state.success) toast.success('Success', { description: state.message });
-      else toast.error('Submition error', { description: state.message });
+      if (state.success) toast.success(t('Success'), { description: state.message });
+      else toast.error(t('Error'), { description: state.message });
     }
-  }, [state.message, state.success]);
+  }, [state, t]);
 
   return (
     <Form {...form}>
-      <form
-        ref={formRef}
-        action={formAction}
-        onSubmit={form.handleSubmit(() => formAction(new FormData(formRef.current!)))}
-        className="flex flex-col gap-y-4"
-      >
+      <form ref={formRef} action={formAction} className="flex flex-col gap-y-4">
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center">
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t('Password')}</FormLabel>
               </div>
               <FormControl>
                 <PasswordInput id="password" placeholder="••••••••" {...field} />
@@ -70,7 +69,7 @@ export function UpdateForm() {
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center">
-                <FormLabel>Confirm password</FormLabel>
+                <FormLabel>{t('Confirm password')}</FormLabel>
               </div>
               <FormControl>
                 <PasswordInput id="passwordConfirm" placeholder="••••••••" {...field} />
@@ -80,7 +79,7 @@ export function UpdateForm() {
           )}
         />
 
-        <SubmitButton>Reset password</SubmitButton>
+        <SubmitButton>{t('Save')}</SubmitButton>
       </form>
     </Form>
   );

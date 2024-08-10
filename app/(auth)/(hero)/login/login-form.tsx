@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { useFormState } from 'react-dom';
@@ -20,6 +21,8 @@ const loginFormSchema = z.object({
 });
 
 export function LoginForm() {
+  const t = useTranslations();
+
   const [state, formAction] = useFormState(login, { message: '' });
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -31,25 +34,20 @@ export function LoginForm() {
 
   useEffect(() => {
     if (state.message !== '') {
-      if (state.success) toast.success('Login successful');
-      else toast.error('Login error', { description: state.message });
+      if (state.success) toast.success(t('Login successful'));
+      else toast.error(t('Login error'), { description: state.message });
     }
-  }, [state]);
+  }, [state, t]);
 
   return (
     <Form {...form}>
-      <form
-        ref={formRef}
-        action={formAction}
-        onSubmit={form.handleSubmit(() => formAction(new FormData(formRef.current!)))}
-        className="flex flex-col gap-y-4"
-      >
+      <form ref={formRef} action={formAction} className="flex flex-col gap-y-4">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email address</FormLabel>
+              <FormLabel>{t('Email address')}</FormLabel>
               <FormControl>
                 <Input
                   id="email"
@@ -73,9 +71,9 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center">
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t('Password')}</FormLabel>
                 <Link href="/forgot-password" className="ml-auto inline-block text-sm underline" tabIndex={5}>
-                  Forgot your password?
+                  {t('Forgot your password?')}
                 </Link>
               </div>
               <FormControl>
@@ -86,7 +84,7 @@ export function LoginForm() {
           )}
         />
 
-        <SubmitButton tabIndex={3}>Login</SubmitButton>
+        <SubmitButton tabIndex={3}>{t('Login')}</SubmitButton>
       </form>
     </Form>
   );

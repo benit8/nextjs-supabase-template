@@ -1,5 +1,6 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
@@ -12,6 +13,7 @@ type UpdateFormState = {
 
 const updateFormSchema = z
   .object({
+    /// FIXME: localized error messages
     password: z.string().trim().min(6),
     passwordConfirm: z.string().trim().min(6),
   })
@@ -21,10 +23,11 @@ const updateFormSchema = z
   });
 
 export async function update(prevState: UpdateFormState, formData: FormData): Promise<UpdateFormState> {
+  const t = await getTranslations();
   const data = Object.fromEntries(formData);
   const parsed = updateFormSchema.safeParse(data);
   if (!parsed.success) {
-    return { message: 'Invalid data' };
+    return { message: t('Invalid data') };
   }
 
   const supabase = createClient();
@@ -33,5 +36,5 @@ export async function update(prevState: UpdateFormState, formData: FormData): Pr
     return { message: error.message, fields: parsed.data };
   }
 
-  return { success: true, message: 'Your password was updated. You may login using it.' };
+  return { success: true, message: t('Your password was updated, you may login using it') };
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef } from 'react';
 import { useFormState } from 'react-dom';
 import { useForm } from 'react-hook-form';
@@ -18,6 +19,8 @@ const resetFormSchema = z.object({
 });
 
 export function ResetForm() {
+  const t = useTranslations();
+
   const [state, formAction] = useFormState(reset, { message: '' });
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -29,25 +32,20 @@ export function ResetForm() {
 
   useEffect(() => {
     if (state.message !== '') {
-      if (state.success) toast.success('Success', { description: state.message });
-      else toast.error('Submition error', { description: state.message });
+      if (state.success) toast.success(t('Success'), { description: state.message });
+      else toast.error(t('Error'), { description: state.message });
     }
-  }, [state.message, state.success]);
+  }, [state, t]);
 
   return (
     <Form {...form}>
-      <form
-        ref={formRef}
-        action={formAction}
-        onSubmit={form.handleSubmit(() => formAction(new FormData(formRef.current!)))}
-        className="flex flex-col gap-y-4"
-      >
+      <form ref={formRef} action={formAction} className="flex flex-col gap-y-4">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email address</FormLabel>
+              <FormLabel>{t('Email address')}</FormLabel>
               <FormControl>
                 <Input
                   id="email"
@@ -64,7 +62,7 @@ export function ResetForm() {
           )}
         />
 
-        <SubmitButton>Reset password</SubmitButton>
+        <SubmitButton>{t('Reset password')}</SubmitButton>
       </form>
     </Form>
   );
